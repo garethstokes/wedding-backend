@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="description" content="">
+    
+    <title>GARETH &amp; JENNIFER</title>
+
+    <base href="/" />
+<meta name="frontend/config/environment" content="%7B%22modulePrefix%22%3A%22frontend%22%2C%22environment%22%3A%22production%22%2C%22baseURL%22%3A%22/%22%2C%22locationType%22%3A%22auto%22%2C%22EmberENV%22%3A%7B%22FEATURES%22%3A%7B%7D%7D%2C%22APP%22%3A%7B%22name%22%3A%22frontend%22%2C%22version%22%3A%220.0.0+58dbe9a0%22%7D%2C%22exportApplicationGlobal%22%3Afalse%7D" />
+
+    <!-- Font -->
+    <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="assets/vendor-cbda2eca77daa9750550e958b13e443a.css">
+    <link rel="stylesheet" href="assets/frontend-317c2fe823539140f4eed404dc1639da.css" integrity="sha256-NnndEBO6xFWK4O/TCQVFfwXSigdEWlxj4BQ0Ji/SVz0= sha512-vfBd5lp0YKXjRusNyECVU73d0trllwEo+iW9uGqhmhTm8bek04MzGfwdN7MhaDkG7gSLt7wUzPCtsk80GUDtgQ==" >
+
+    
+  </head>
+  <body>
+    
+
+    <script src="assets/vendor-65ff8088185572cf4f3ed54570d39501.js" integrity="sha256-M/wRXTjQyUs7Sk2iO2i68h0x5n0SWDsdJW5F/++5Jd0= sha512-KSqXXid9bsZaAG36YktIyqS2UN6L+kBHI6CYWSraRRnRBSNUR66/dQRTuR2kM3H+pfFnfqle11BChSmLavDM3Q==" ></script>
+    <script src="assets/frontend-75135c4f17033dc755c6ec651e43f411.js" integrity="sha256-pXcIHfnl2y/L94GU6iw9dN/TGA+qsnd/y3J/zYd7FkM= sha512-olu/1ftCJVuaZ2Q3YsfYbocvzNdJWXWpP+ujEuq22b9xW1Bdhdo/Xt4VfHLm90MZgaFxCri9E9ZW2m4FiqL4tA==" ></script>
+
+    <script>
+      // MAIN SLIDER-FLEXSLIDER
+      //==================================================================================
+      $(window).load(function() {
+        $('#main-slider.flexslider').flexslider(
+        {
+          animation : "fade",
+          controlNav: false,
+          directionNav: true,
+          slideshowSpeed: 5000,  
+          animationSpeed:1000,
+          pauseOnAction: false,
+          animationLoop: true, 
+          pauseOnHover: true,			
+        }).css({ height: (window.innerHeight -100) });
+      });
+      
+      
+      // Check FIREFOX 
+      //----------------------------------------------------------------------------------
+      var is_firefox = function is_firefox() {
+        if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+          return 1;
+        }
+      }
+      
+      // Check IE11 (Not Windows Phone)
+      ///----------------------------------------------------------------------------------
+      var isIE11desktop = function isIE11desktop() {	
+        if (!!navigator.userAgent.match(/Trident\/7\./) && window.navigator.userAgent.indexOf("Windows Phone") < 0) {
+            return 1;
+        }
+      }
+      
+      if (is_firefox() || isIE11desktop()){
+        $('.flexslider .slides').addClass("css-fade");
+      }
+
+      $(document).ready(function() {
+          var theday = new Date();
+          theday = new Date(2016, 7, 7);
+          $('#countdown').countdown({until: theday, format: 'ODHMS'});
+          $('#countdown').countdown($.countdown.regionalOptions['custom-label']); 
+             
+          $('#date-countdown').countdown({until: theday, format: 'ODHMS'});
+      });
+    </script>
+
+  </body>
+</html>

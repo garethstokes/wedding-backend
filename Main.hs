@@ -1,77 +1,42 @@
 {-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE EmptyDataDecls             #-}
-{-# LANGUAGE FlexibleContexts           #-}
-{-# LANGUAGE GADTs                      #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE QuasiQuotes                #-}
-{-# LANGUAGE TemplateHaskell            #-}
-{-# LANGUAGE TypeFamilies               #-}
 
--- scotty
-import Web.Scotty as S
-
--- wai
+import Web.Scotty
+import Web.Scotty.Internal.Types (ActionT)
+import Network.Wai
 import Network.Wai.Middleware.Static
-import Network.Wai.Middleware.RequestLogger
-
--- database
-import           Data.Text
-import           Control.Monad.IO.Class  (liftIO)
-import           Database.Persist
-import           Database.Persist.Postgresql
-import           Database.Persist.TH
-
--- random
+import Network.Wai.Middleware.RequestLogger (logStdoutDev, logStdout)
+import Network.Wai.Middleware.HttpAuth
+import Control.Applicative
+import Control.Monad.IO.Class
+import qualified Data.Configurator as C
+import qualified Data.Configurator.Types as C
+import Data.Pool(Pool, createPool, withResource)
+import qualified Data.Text.Lazy as TL
+import Database.PostgreSQL.Simple
 import Network.HTTP.Types (status302)
 import System.Environment (lookupEnv)
-import Control.Monad.Logger    (runStderrLoggingT)
-import Data.Text.Lazy (toStrict)
 
--- models
-share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-RsvpEntry
-    name Text
-    guest Text
-    email Text
-    attending Bool
-    bus Bool
-    dietry Text 
-    message Text
-    deriving Show
-|]
-
--- db connection string
-connStr = "host=localhost dbname=wedding user=wedding password=hanshotfirst port=5432"
-
--- db helpers
---runDB pool q = liftIO $ runSqlPersistMPool q pool
-
-db query = runStderrLoggingT $ 
-        withPostgresqlPool connStr 10 $ 
-        \pool -> liftIO $ runSqlPersistMPool query pool
-
-doMigrations = runMigration migrateAll
-
---inHandlerDb = liftIO . db
---inAppDb = liftIO . db
+import DataAccess
+import Domain
 
 -- entry point
 main :: IO ()
 main = do
 
-   -- migrate database before starting webserver
-   db doMigrations
-
    -- grab the webserver port if one is passed in
    port <- lookupSetting "PORT" 3000
+   db_name <- lookupSetting "DB_NAME" "wedding"
+   db_user <- lookupSetting "DB_USER" "garethstokes"
+   db_pass <- lookupSetting "DB_PASS" ""
+
+   let dbConfig = DbConfig db_name db_user db_pass
+
+   -- db init
+   pool <- createPool (newConn dbConfig) close 1 40 10
 
    -- start the webserver
    scotty port $ do
          
-      liftIO $ db $ doMigrations --insert $ rsvp
-
       -- serve static files
       middleware $ staticPolicy (noDots >-> addBase "dist/")
 
@@ -81,14 +46,14 @@ main = do
       -- ROUTES
 
       -- welcome homepage
-      S.get "/" $ file "dist/index.html"
+      get "/" $ file "dist/index.html"
 
       -- rsvp :: post
-      S.post "/rsvp" $ do
+      post "/rsvp" $ do
 
          -- pull params from body
          name           <- (param "name")          `rescue` (\msg -> return msg)
-         guestName      <- (param "guestName")     `rescue` (\msg -> return msg)
+         guestName      <- (param "guest-name")     `rescue` (\msg -> return msg)
          email          <- (param "email")         `rescue` (\msg -> return msg)
          dietry         <- (param "dietry")        `rescue` (\msg -> return msg)
          message        <- (param "message")       `rescue` (\msg -> return msg)
@@ -96,9 +61,11 @@ main = do
          busStatus      <- (param "bus-status")    `rescue` (\msg -> return msg)
 
          -- create a domain model
-         let rsvp = RsvpEntry (toStrict name) (toStrict guestName) (toStrict email) True True (toStrict dietry) (toStrict message)
+         --let rsvp = RsvpEntry (toStrict name) (toStrict guestName) (toStrict email) True True (toStrict dietry) (toStrict message)
+         let rsvp = Rsvp name guestName email attendStatus busStatus dietry message
 
          -- save to database
+         insertRsvp pool rsvp
 
          --db $ insert $ RsvpEntry name guestName email attendStatus busStatus dietry message
          

@@ -8,6 +8,7 @@ executable          backend
     main-is:        Main.hs
     ghc-options:    -Wall -threaded -O2 -rtsopts -with-rtsopts=-N
     extensions:     OverloadedStrings
+    other-modules:   DataAccess, Domain
     build-depends:  base   >= 4      && < 5
                   , scotty >= 0.10.0 && < 0.11
                   , wai-middleware-static >= 0.8 && < 0.9

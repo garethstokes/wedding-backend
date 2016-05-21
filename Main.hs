@@ -28,8 +28,8 @@ main = do
    db_name <- lookupSetting "DB_NAME" "wedding"
    db_user <- lookupSetting "DB_USER" "garethstokes"
    db_pass <- lookupSetting "DB_PASS" ""
-   db_host <- lookupSetting "DB_HOST" "."
-   db_port <- lookupSetting "DB_PORT" 5342
+   db_host <- lookupSetting "DB_HOST" "localhost"
+   db_port <- lookupSetting "DB_PORT" 5432
 
    let dbConfig = DbConfig db_name db_user db_pass db_host db_port
 
@@ -43,7 +43,7 @@ main = do
       middleware $ staticPolicy (noDots >-> addBase "dist/")
 
       -- log requests to stdout
-      middleware logStdoutDev
+      middleware logStdout
 
       -- ROUTES
 

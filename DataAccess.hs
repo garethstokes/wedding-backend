@@ -13,13 +13,16 @@ import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
 import qualified Data.ByteString.Lazy.Char8 as BL
 import qualified Data.Text as T
+import Data.Word (Word16)
 import GHC.Int
 
 -- DbConfig contains info needed to connect to MySQL server
 data DbConfig = DbConfig {
      dbName :: String,
      dbUser :: String,
-     dbPassword :: String
+     dbPassword :: String,
+     dbHost :: String,
+     dbPort :: Word16
      }
      deriving (Show, Generic)
 
@@ -30,6 +33,8 @@ newConn conf = connect defaultConnectInfo
                        { connectUser = dbUser conf
                        , connectPassword = dbPassword conf
                        , connectDatabase = dbName conf
+                       , connectHost = dbHost conf
+                       , connectPort = dbPort conf
                        }
 
 --------------------------------------------------------------------------------

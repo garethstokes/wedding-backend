@@ -28,8 +28,10 @@ main = do
    db_name <- lookupSetting "DB_NAME" "wedding"
    db_user <- lookupSetting "DB_USER" "garethstokes"
    db_pass <- lookupSetting "DB_PASS" ""
+   db_host <- lookupSetting "DB_HOST" "."
+   db_port <- lookupSetting "DB_PORT" 5342
 
-   let dbConfig = DbConfig db_name db_user db_pass
+   let dbConfig = DbConfig db_name db_user db_pass db_host db_port
 
    -- db init
    pool <- createPool (newConn dbConfig) close 1 40 10

@@ -1,4 +1,4 @@
-### Wedding Backend
+# Wedding Backend
 
 ## Introduction
 
@@ -8,11 +8,11 @@ This code was hacked together in a weekend and as such should not be used for an
 
 ## Structure
 
-# Domain.hs
+### Domain.hs
 exports the Rsvp model
 
-# DataAccess.hs
+### DataAccess.hs
 functions for accessing the database. of note is the insertRsvp function.
 
-# Main.hs
+### Main.hs
 brings in the domain and data-access layers. starts up the webserver and implements the logic for serving the static frontend assets and handling a POST request for inserting a RSVP.

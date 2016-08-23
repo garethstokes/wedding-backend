@@ -25,21 +25,12 @@ main = do
 
    -- grab the webserver port if one is passed in
    port <- lookupSetting "PORT" 3000
-   --db_name <- lookupSetting "DB_NAME" "wedding"
-   --db_user <- lookupSetting "DB_USER" "garethstokes"
-   --db_pass <- lookupSetting "DB_PASS" ""
-   --db_host <- lookupSetting "DB_HOST" "localhost"
-   --db_port <- lookupSetting "DB_PORT" 5432
-   -- web: DB_NAME="d3kvj9ohivn4pq" DB_USER="sibucutuylmcpe" 
-   -- DB_PASS="gUUIl9Ve59tphAhCsZCVv1z5ex" 
-   -- DB_HOST="ec2-54-243-200-110.compute-1.amazonaws.com" 
+   db_name <- lookupSetting "DB_NAME" "wedding"
+   db_user <- lookupSetting "DB_USER" "garethstokes"
+   db_pass <- lookupSetting "DB_PASS" ""
+   db_host <- lookupSetting "DB_HOST" "localhost"
+   db_port <- lookupSetting "DB_PORT" 5432
    
-   let db_name = "d3kvj9ohivn4pq";
-   let db_user = "sibucutuylmcpe";
-   let db_pass = "gUUIl9Ve59tphAhCsZCVv1z5ex";
-   let db_host = "ec2-54-243-200-110.compute-1.amazonaws.com";
-   let db_port = 5432;
-
    let dbConfig = DbConfig db_name db_user db_pass db_host db_port
 
    -- db init
